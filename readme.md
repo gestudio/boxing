@@ -15,6 +15,7 @@ quick and dirty, works for me, public domain, donations very welcome.
 ## author
 
 sebastian vollnhals <sebastian at vollnhals dot info>
+inigo garcia <inigo at gestudio dot com>
 
 usage:
 
@@ -26,6 +27,26 @@ $b->add_outer_box(40,30,30); // our quantum box; l, w, h
 $b->add_inner_box(20,30,40); // schroedingers cat; l, w, h
 $b->add_inner_box(10,5,5); // the poison; l, w, h
 $b->add_inner_box(5,5,10); // some katzenstreu; l, w, h
+
+if ($b->fits()) {
+
+	// schroedingers cat and schroedingers stuff do fit in the box
+
+}
+````
+
+
+	
+usage with weights:
+
+````php
+$b = new boxing();
+
+$b->add_outer_box(40,30,30,1500); // our quantum box; l, w, h
+
+$b->add_inner_box(20,30,40,400); // schroedingers cat; l, w, h
+$b->add_inner_box(10,5,5,300); // the poison; l, w, h
+$b->add_inner_box(5,5,10,150); // some katzenstreu; l, w, h
 
 if ($b->fits()) {
 

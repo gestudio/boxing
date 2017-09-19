@@ -14,14 +14,15 @@ class boxing {
 
 	}
 
-	public function add_outer_box($l,$w,$h) {
+	public function add_outer_box($l,$w,$h, $mw = null) {
 
 		if ($l > 0 && $w > 0 && $h > 0) {
 
 			$this -> outer_boxes[] = array(
 
 				"dimensions" => $this -> sort_dimensions($l,$w,$h),
-				"packed" => false
+				"packed" => false,
+				"max_weight" => $mw
 
 			);
 
@@ -31,14 +32,15 @@ class boxing {
 
 	}
 
-	public function add_inner_box($l,$w,$h) {
+	public function add_inner_box($l,$w,$h,$wg = null) {
 
 		if ($l > 0 && $w > 0 && $h > 0) {
 
 			$this -> inner_boxes[] = array(
 
 				"dimensions" => $this -> sort_dimensions($l,$w,$h),
-				"packed" => false
+				"packed" => false,
+				"weight" => $wg
 
 			);
 
@@ -54,6 +56,16 @@ class boxing {
 		/* first we do a simple volume check, this can save a lot of calculations */
 
 		if (!$this -> fits_volume()) {
+
+			return false;
+
+		}
+
+
+
+		/* second we do a simple weight check, this can save a lot of calculations */
+
+		if (!$this -> fits_weight()) {
 
 			return false;
 
@@ -131,6 +143,31 @@ class boxing {
 		
 		return $inner_volume;
 	}
+
+	public function get_outer_weight() {
+		
+		$outer_volume = 0;
+		
+		foreach ($this -> outer_boxes as $outer) {
+
+			$outer_volume += $outer["weight"];
+
+		}
+		
+		return $outer_volume;
+	}
+	
+	public function get_inner_weight() {
+		$inner_volume = 0;
+		
+		foreach ($this -> inner_boxes as $inner) {
+
+			$inner_volume += $inner["weight"];
+
+		}
+		
+		return $inner_volume;
+	}
 	
 
 	public function fits_volume() {
@@ -149,6 +186,26 @@ class boxing {
 		
 		return $return;
 	}
+
+
+
+	public function fits_weight() {
+		$return = false;
+		
+		if ($this->get_inner_weight() > $this->get_outer_weight()) {
+
+			/* inner boxes have more volume than outer ones */
+
+			$return = false;
+
+		} else {
+
+			$return = true;
+		}
+		
+		return $return;
+	}
+
 	
 	
 	private function find_subboxes($inner_box_id, $outer_box_id) {
